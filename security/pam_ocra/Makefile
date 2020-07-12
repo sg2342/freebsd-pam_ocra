@@ -24,4 +24,6 @@ PLIST_FILES=	lib/pam_ocra.so \
 		man/man8/pam_ocra.8.gz \
 		man/man8/ocra_tool.8.gz
 
+PKG_ENV+=       SOURCE_DATE_EPOCH=${TIMESTAMP}
+
 .include <bsd.port.mk>
