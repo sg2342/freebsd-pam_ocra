@@ -1,0 +1,20 @@
+env:
+  CIRRUS_CLONE_DEPTH: 1
+  ARCH: amd64
+
+freebsd_instance:
+  image_family: freebsd-12-1
+
+package_task:
+  timeout_in: 90m
+  pkg_upgrade_script:
+    - sed -i.bak -e 's,pkg+http://pkg.FreeBSD.org/\${ABI}/quarterly,pkg+http://pkg.FreeBSD.org/\${ABI}/latest,' /etc/pkg/FreeBSD.conf
+    - pkg upgrade -y
+  portsnap_script:
+    - portsnap  --interactive fetch
+    - portsnap extract
+  build_package_script:
+    - env BATCH=1 PACKAGES=`pwd` __MAKE_CONF=`pwd`/make.conf make -C security/pam_ocra package
+    - sha256 ./All/pam_ocra-1.5.txz
+  binaries_artifacts:
+    path: "./All/pam_ocra-1.5.txz"
